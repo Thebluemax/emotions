@@ -10,6 +10,8 @@ import android.view.View;
 
 import androidx.core.view.MotionEventCompat;
 
+import com.example.emotions.classes.Emotion;
+
 public class CanvasView extends View implements View.OnTouchListener {
 
     private static final String[] EMOTIONS_LIST = {
@@ -46,10 +48,12 @@ public class CanvasView extends View implements View.OnTouchListener {
     private boolean drawCircle;
     private boolean isSplash = true;
     private int indexWord = 0;
+    private MainActivity main;
 
     public CanvasView (Context context,float width, float height) {
 
         super(context);
+        main = (MainActivity) context;
         w = width;
         h = height;
         Log.d("WIDTH",w+"/"+h);
@@ -116,6 +120,9 @@ public class CanvasView extends View implements View.OnTouchListener {
     }
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+        if (!main.isButtonsVisible())
+            main.setButtonHolderVisibility(true);
+
         String DEBUG_TAG = "TAG";
         final int action = event.getActionMasked();
         float posX = event.getX();
@@ -140,6 +147,8 @@ public class CanvasView extends View implements View.OnTouchListener {
             case (MotionEvent.ACTION_UP) :
                 toggleCircle();
                 invalidate();
+                main.addEmotion(new Emotion(EMOTIONS_LIST[indexWord],
+                        Color.rgb(red,green,blue)));
                 return true;
             case (MotionEvent.ACTION_CANCEL) :
               //  Log.d(DEBUG_TAG,"Action was CANCEL");

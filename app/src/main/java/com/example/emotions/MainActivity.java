@@ -4,6 +4,7 @@ import android.drm.DrmStore;
 import android.graphics.Point;
 import android.os.Bundle;
 
+import com.example.emotions.classes.Emotion;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -15,10 +16,17 @@ import android.view.Display;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private CanvasView canvas;
+    private LinearLayout buttonHolder;
+    private List<Emotion> emotionList;
+    private Emotion activeEmotion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,23 +35,43 @@ public class MainActivity extends AppCompatActivity {
 
 
         ConstraintLayout layout = (ConstraintLayout)findViewById(R.id.holder);
+        buttonHolder = (LinearLayout) findViewById(R.id.button_holder);
+
+        setButtonHolderVisibility(false);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         int toolbarHeight = toolbar.getHeight();
         Point size = getWindowSize();
-        canvas = new CanvasView(this,size.x,size.y-toolbarHeight);
+        canvas = new CanvasView(this,size.x,size.y - toolbarHeight);
         layout.addView(canvas);
+
+        emotionList = new ArrayList<Emotion>();
         FloatingActionButton saveBtn = findViewById(R.id.save);
         FloatingActionButton cancelBtn = findViewById(R.id.close);
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                emotionList.add(activeEmotion);
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
 
+    }
+
+    public boolean isButtonsVisible(){
+        return buttonHolder.getVisibility() == View.VISIBLE;
+    }
+
+    public void setButtonHolderVisibility(boolean visibility){
+        int visible = visibility ? View.VISIBLE : View.INVISIBLE;
+        buttonHolder.setVisibility(visible);
+    }
+
+    public void addEmotion(Emotion emotion){
+        //emotionList.add(emotion);
+        activeEmotion = emotion;
     }
     private Point getWindowSize(){
         Point size = new Point();
